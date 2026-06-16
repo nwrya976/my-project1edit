@@ -2,21 +2,20 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <!-- هذا السطر تم تعديله لإجبار العرض على مقاس الموبايل الحقيقي ومنع التكبير والتصغير التلقائي -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ProTrack Hub</title>
     
-    <!-- استدعاء خط Cairo الاحترافي للواجهات العربية -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&display=swap" rel="stylesheet">
     
     <style>
+        /* إجبار المتصفح على عرض حجم الخط الأساسي أكبر */
+        html { font-size: 20px !important; }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Cairo', sans-serif !important;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -28,234 +27,142 @@
             align-items: center;
             min-height: 100vh;
             padding-bottom: 40px;
-            /* منع المتصفح من تصغير الخط تلقائياً */
-            -webkit-text-size-adjust: 100%;
         }
 
-        /* شريط علوي ضخم واحترافي */
         .header {
             width: 100%;
-            height: 80px; /* زيادة الارتفاع */
+            height: 90px;
             background-color: #ffffff;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 24px;
+            padding: 0 30px;
             position: fixed;
             top: 0;
             left: 0;
             z-index: 1000;
         }
 
-        /* زر القائمة بحجم ضخم جداً وسهل الضغط جداً */
         .menu-btn {
             background: #f1f5f9;
             border: none;
-            font-size: 36px; /* تكبير الرمز */
+            font-size: 38px !important;
             color: #4a154b;
-            cursor: pointer;
-            width: 60px; /* تكبير مساحة الزر */
-            height: 60px;
-            border-radius: 14px;
+            width: 65px;
+            height: 65px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .menu-btn:active {
-            background-color: #e2e8f0;
-            transform: scale(0.92);
         }
 
         .logo {
-            font-size: 28px; /* تكبير اللوغو */
+            font-size: 32px !important;
             font-weight: 800;
             color: #4a154b;
         }
 
-        /* الحاوية الرئيسية للمحتوى */
         .main-container {
-            margin-top: 110px; /* مسافة كافية بعد الهيدر الضخم */
+            margin-top: 130px;
             width: 100%;
-            max-width: 500px;
-            padding: 0 20px;
+            max-width: 550px;
+            padding: 0 25px;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 25px;
         }
 
-        /* بنر ترحيبي علوي بنصوص واضحة */
         .welcome-section {
             background: linear-gradient(135deg, #4a154b 0%, #6b21a8 100%);
             color: #ffffff;
-            padding: 28px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(74, 21, 75, 0.2);
+            padding: 30px;
+            border-radius: 22px;
         }
 
-        .welcome-section h1 {
-            font-size: 26px; /* تكبير العنوان الرئيسي */
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
+        .welcome-section h1 { font-size: 30px !important; margin-bottom: 12px; }
+        .welcome-section p { font-size: 18px !important; line-height: 1.6; opacity: 0.95; }
 
-        .welcome-section p {
-            font-size: 16px; /* تكبير النص الوصفي */
-            opacity: 0.95;
-            line-height: 1.7;
-        }
-
-        /* عنوان القسم */
-        .section-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: #64748b;
-            margin-bottom: -5px;
-        }
-
-        /* تصميم القوائم والبطاقات بحجم ضخم وعريض */
-        .tools-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
+        .section-title { font-size: 20px !important; font-weight: 800; color: #64748b; }
 
         .tool-card {
             background: #ffffff;
-            border: 2px solid #e2e8f0; /* زيادة سمك الإطار */
+            border: 2px solid #e2e8f0;
             border-radius: 20px;
-            padding: 22px; /* مساحة داخلية ضخمة لسهولة اللمس */
+            padding: 25px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             text-decoration: none;
             color: inherit;
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.02);
-            transition: all 0.2s ease;
         }
 
-        .tool-card:active {
-            transform: scale(0.96);
-            background-color: #f8fafc;
-            border-color: #cbd5e1;
-        }
-
-        .tool-info {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        /* الأيقونات بحجم كبير جداً */
         .tool-icon {
-            width: 56px;
-            height: 56px;
+            width: 65px;
+            height: 65px;
             background: #fae8ff;
             color: #4a154b;
-            border-radius: 16px;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px; /* تكبير الرموز التعبيرية */
+            font-size: 30px !important;
         }
 
-        .tool-details .title {
-            font-size: 20px; /* تكبير أسماء القوائم */
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 4px;
-        }
-
-        .tool-details .subtitle {
-            font-size: 14px; /* تكبير الوصف الفرعي */
-            color: #64748b;
-        }
-
-        .arrow-icon {
-            font-size: 22px;
-            color: #94a3b8;
-        }
+        .title { font-size: 22px !important; font-weight: 800; color: #1e293b; }
+        .subtitle { font-size: 16px !important; color: #64748b; margin-top: 4px; }
+        .arrow-icon { font-size: 24px !important; color: #94a3b8; }
     </style>
 </head>
 <body>
 
-    <!-- شريط التنقل العلوي -->
     <header class="header">
-        <a href="w2n://open-sidebar" class="menu-btn">
-            &#9776;
-        </a>
+        <a href="w2n://open-sidebar" class="menu-btn">☰</a>
         <div class="logo">ProTrack</div>
-        <div style="width: 60px;"></div> <!-- توازن الهيدر مع حجم الزر الجديد -->
+        <div style="width: 65px;"></div>
     </header>
 
-    <!-- المحتوى الرئيسي للمنصة -->
     <main class="main-container">
-        
-        <!-- البنر الترحيبي -->
         <div class="welcome-section">
             <h1>منصة الإدارة والأدوات</h1>
-            <p>إدارة مشاريعك الهندسية وحساب الكميات بدقة عالية في مكان واحد. اضغط على الزر العلوي المنسدل أو اختر الأداة من القائمة في الأسفل.</p>
+            <p>اختر الأداة المطلوبة من القائمة أدناه أو اضغط على زر القائمة في الأعلى.</p>
         </div>
 
-        <p class="section-title">الأدوات المتاحة</p>
+        <p class="section-title">قائمة الأدوات</p>
 
-        <!-- شبكة الأدوات والقوائم الكبيرة -->
-        <div class="tools-grid">
-            
-            <!-- أداة 1 -->
-            <a href="w2n://open-sidebar" class="tool-card">
-                <div class="tool-info">
-                    <div class="tool-icon">💼</div>
-                    <div class="tool-details">
-                        <div class="title">إدارة المشاريع</div>
-                        <div class="subtitle">متابعة سير الأعمال والمهام اليومية</div>
-                    </div>
+        <a href="w2n://open-sidebar" class="tool-card">
+            <div style="display:flex; align-items:center; gap:20px;">
+                <div class="tool-icon">💼</div>
+                <div>
+                    <div class="title">إدارة المشاريع</div>
+                    <div class="subtitle">متابعة سير الأعمال والمهام</div>
                 </div>
-                <div class="arrow-icon">◀</div>
-            </a>
+            </div>
+            <div class="arrow-icon">◀</div>
+        </a>
 
-            <!-- أداة 2 -->
-            <a href="w2n://open-sidebar" class="tool-card">
-                <div class="tool-info">
-                    <div class="tool-icon">📊</div>
-                    <div class="tool-details">
-                        <div class="title">حساب الكميات</div>
-                        <div class="subtitle">جداول الكميات والمسح الإنشائي للموقع</div>
-                    </div>
+        <a href="w2n://open-sidebar" class="tool-card">
+            <div style="display:flex; align-items:center; gap:20px;">
+                <div class="tool-icon">📊</div>
+                <div>
+                    <div class="title">حساب الكميات</div>
+                    <div class="subtitle">جداول المسح الإنشائي</div>
                 </div>
-                <div class="arrow-icon">◀</div>
-            </a>
+            </div>
+            <div class="arrow-icon">◀</div>
+        </a>
 
-            <!-- أداة 3 -->
-            <a href="w2n://open-sidebar" class="tool-card">
-                <div class="tool-info">
-                    <div class="tool-icon">🏗️</div>
-                    <div class="tool-details">
-                        <div class="title">كمية الحديد</div>
-                        <div class="subtitle">حساب أوزان وكميات حديد التسليح</div>
-                    </div>
+        <a href="w2n://open-sidebar" class="tool-card">
+            <div style="display:flex; align-items:center; gap:20px;">
+                <div class="tool-icon">🏗️</div>
+                <div>
+                    <div class="title">كمية الحديد</div>
+                    <div class="subtitle">حساب أوزان التسليح</div>
                 </div>
-                <div class="arrow-icon">◀</div>
-            </a>
-
-            <!-- أداة 4 -->
-            <a href="w2n://open-sidebar" class="tool-card">
-                <div class="tool-info">
-                    <div class="tool-icon">🧮</div>
-                    <div class="tool-details">
-                        <div class="title">حاسبة علمية هندسية</div>
-                        <div class="subtitle">إجراء العمليات الحسابية والمعادلات السريعة</div>
-                    </div>
-                </div>
-                <div class="arrow-icon">◀</div>
-            </a>
-
-        </div>
-
+            </div>
+            <div class="arrow-icon">◀</div>
+        </a>
     </main>
-
 </body>
 </html>
