@@ -1,854 +1,138 @@
-import tkinter as tk
-from tkinter import messagebox
-# أسعار المواد (يمكن تعديلها بسهولة هنا)
-PRICE_BRICKS_4000 = 650000         # سعر 4000 طابوقة عادية
-PRICE_RED_BRICKS_4000 = 1100000    # سعر 4000 طابوقة حمراء
-PRICE_CONCRETE_PER_M3 = 80000      # سعر المتر المكعب للخرسانة
-PRICE_CEMENT_BAG = 5000             # سعر كيس الاسمنت
-PRICE_PORCELAIN_PER_M2 = 9000      # سعر البورسلين للمتر المربع
-PRICE_TILE_PER_M2 = 8000            # سعر الكاشي للمتر المربع تقريبا
-
-# دوال النوافذ الفرعية (مقتبسة من كودك السابق):
-
-import tkinter as tk
-from tkinter import messagebox
-
-def open_tab7():
-    win = tk.Toplevel()
-    win.title("عدد العمال اليومي")
-
-    # قائمة اختيار نوع البناء
-    tk.Label(win, text="اختر نوع البناء").grid(row=0, column=0, sticky='w')
-    options = ["بناء الهيكل", "ارضيات", "سيراميك", "جص وابياض"]
-    selected_option = tk.StringVar()
-    selected_option.set(options[0])
-    tk.OptionMenu(win, selected_option, *options).grid(row=0, column=1)
-
-    # نتيجة
-    result_label = tk.Label(win, text="", fg="blue", justify="right")
-    result_label.grid(row=2, column=0, columnspan=2)
-
-    def calculate():
-        work_type = selected_option.get()
-        result_lines = []
-
-        if work_type == "بناء الهيكل":
-            result_lines.append("1 خلفة")
-            result_lines.append("1 مساعد")
-            result_lines.append("1 مٌناول الطابوق")
-            result_lines.append("2 عامل أيصال الخبط")
-            result_lines.append("1 خباط")
-        elif work_type == "ارضيات":
-            result_lines.append("1 خلفة")
-            result_lines.append("1 مساعد")
-            result_lines.append("2 خباط")
-        elif work_type == "سيراميك":
-            result_lines.append("1 خلفة")
-            result_lines.append("1 مساعد")
-            result_lines.append("1 خباط")
-        elif work_type == "جص وابياض":
-            result_lines.append("1 خلفة")
-            result_lines.append("1 مساعد")
-        else:
-            result_lines.append("نوع البناء غير معروف")
-
-        messagebox.showinfo("النتيجة", "\n".join(result_lines))
-        result_label.config(text="\n".join(result_lines))
-
-    tk.Button(win, text="احسب", command=calculate).grid(row=1, column=0, columnspan=2, pady=10)
-
-def open_tab6():
-    win = tk.Toplevel()
-    win.title("Tab 6: الحفر والردم (السبيس)")
-
-    # اختيار نوع الحساب
-    calc_type_var = tk.StringVar(value="both")  # افتراضي: كلاهما
-
-    def toggle_entries():
-        choice = calc_type_var.get()
-        if choice == "excavation":
-            # تفعيل حقول الحفر فقط، وتعطيل الردم وتنظيفها
-            for e in entries_hfr:
-                e.config(state="normal")
-            for e in entries_rdm:
-                e.delete(0, tk.END)
-                e.config(state="disabled")
-        elif choice == "fill":
-            # تفعيل حقول الردم فقط، وتعطيل الحفر وتنظيفها
-            for e in entries_rdm:
-                e.config(state="normal")
-            for e in entries_hfr:
-                e.delete(0, tk.END)
-                e.config(state="disabled")
-        else:  # كلاهما
-            for e in entries_hfr:
-                e.config(state="normal")
-            for e in entries_rdm:
-                e.config(state="normal")
-
-    # ----- اختيار نوع الحساب (RadioButtons) -----
-    tk.Label(win, text="اختر نوع الحساب:", fg="purple").grid(row=0, column=0, columnspan=2, sticky='w')
-    tk.Radiobutton(win, text="حساب الحفر فقط", variable=calc_type_var, value="excavation", command=toggle_entries).grid(row=1, column=0, sticky='w')
-    tk.Radiobutton(win, text="حساب الردم فقط", variable=calc_type_var, value="fill", command=toggle_entries).grid(row=1, column=1, sticky='w')
-    tk.Radiobutton(win, text="حساب الحفر والردم معاً", variable=calc_type_var, value="both", command=toggle_entries).grid(row=2, column=0, columnspan=2, sticky='w')
-
-    # ----- إدخالات الحفر -----
-    labels_hfr = [
-        "منسوب الأرض المطلوبة (H1)",
-        "معدل مناسيب الأرض الطبيعية (H2)>H1",
-        "مساحة البناية (A1)",
-        "حجم السيارة (V1)",
-        "سعر السيارة الواحدة (P)"
-    ]
-    entries_hfr = []
-    row_offset = 3
-    tk.Label(win, text="--- بيانات الحفر ---", fg="blue").grid(row=row_offset, column=0, columnspan=2, sticky='w')
-    for i, label in enumerate(labels_hfr):
-        tk.Label(win, text=label).grid(row=row_offset + i + 1, column=0, sticky='w')
-        e = tk.Entry(win)
-        e.grid(row=row_offset + i + 1, column=1)
-        entries_hfr.append(e)
-
-    # ----- إدخالات الردم -----
-    row_offset_rdm = row_offset + len(labels_hfr) + 2
-    labels_rdm = [
-        "مساحة البناية + ممشى العمال (A2)",
-        " ارتفاع الردم (سم) (H3) ",
-        "حجم السيارة (V2)",
-        "سعر السيارة الواحدة (P1)"
-    ]
-    entries_rdm = []
-    tk.Label(win, text="--- بيانات الردم (السبيس) ---", fg="green").grid(row=row_offset_rdm, column=0, columnspan=2, sticky='w')
-    for i, label in enumerate(labels_rdm):
-        tk.Label(win, text=label).grid(row=row_offset_rdm + i + 1, column=0, sticky='w')
-        e = tk.Entry(win)
-        e.grid(row=row_offset_rdm + i + 1, column=1)
-        entries_rdm.append(e)
-
-    note_label = tk.Label(win, text="", fg="darkred")
-    note_label.grid(row=row_offset_rdm + len(labels_rdm) + 2, column=0, columnspan=2)
-
-    def calculate_tab6():
-        try:
-            result_lines = []
-            choice = calc_type_var.get()
-
-            if choice in ("excavation", "both"):
-                # الحفر
-                if all(e.get().strip() != "" for e in entries_hfr):
-                    H1 = float(entries_hfr[0].get())
-                    H2 = float(entries_hfr[1].get())
-                    A1 = float(entries_hfr[2].get())
-                    V1 = float(entries_hfr[3].get())
-                    P = float(entries_hfr[4].get())
-
-                    Y = H2 - H1
-                    T = Y * A1 * 1.25
-                    N = T / V1
-                    total_price_hfr = N * P
-
-                    result_lines.append("---- الحفر ----")
-                    result_lines.append(f"عمق الحفر: {Y:.2f} م")
-                    result_lines.append(f"كمية الحفر: {T:.2f} م³")
-                    result_lines.append(f"عدد السيارات المطلوبة: {N:.2f}")
-                    result_lines.append(f"السعر الكلي للحفر: {total_price_hfr:,.0f} د.ع\n")
-                else:
-                    if choice == "excavation":
-                        messagebox.showerror("خطأ", "يرجى إدخال جميع بيانات الحفر.")
-                        return
-
-            if choice in ("fill", "both"):
-                # الردم
-                if all(e.get().strip() != "" for e in entries_rdm):
-                    A2 = float(entries_rdm[0].get())
-                    H3 = float(entries_rdm[1].get())
-                    V2 = float(entries_rdm[2].get())
-                    P1 = float(entries_rdm[3].get())
-
-                    H3_m = H3 / 100  # تحويل إلى متر
-
-                    result_lines.append("---- الردم (السبيس) ----")
-                    if H3 <= 25:
-                        T2 = A2 * (H3_m + 0.02)
-                        N1 = T2 / V2
-                        price_rdm = N1 * P1
-                        result_lines.append(f"كمية الردم: {T2:.2f} م³")
-                        result_lines.append(f"عدد السيارات: {N1:.2f}")
-                        result_lines.append(f"السعر الكلي للردم: {price_rdm:,.0f} د.ع")
-                    else:
-                        # طبقتين
-                        H3_half = H3_m / 2
-                        T2_layer = A2 * (H3_half + 0.02)
-                        N1_layer = T2_layer / V2
-                        price_layer = N1_layer * P1
-                        total_rdm = T2_layer * 2
-                        total_trucks = N1_layer * 2
-                        total_price = price_layer * 2
-                        result_lines.append("ارتفاع الردم أكبر من 25 سم → طبقتين:")
-                        result_lines.append(f"كمية الردم للطبقة الواحدة: {T2_layer:.2f} م³")
-                        result_lines.append(f"عدد السيارات لكل طبقة: {N1_layer:.2f}")
-                        result_lines.append(f"السعر لكل طبقة: {price_layer:,.0f} د.ع\n")
-                        result_lines.append(f"الكمية الإجمالية: {total_rdm:.2f} م³")
-                        result_lines.append(f"عدد السيارات الكلي: {total_trucks:.2f}")
-                        result_lines.append(f"السعر الكلي للردم: {total_price:,.0f} د.ع")
-                else:
-                    if choice == "fill":
-                        messagebox.showerror("خطأ", "يرجى إدخال جميع بيانات الردم.")
-                        return
-
-            if result_lines:
-                note_label.config(text="تمت الحسابات بنجاح")
-                messagebox.showinfo("النتائج", "\n".join(result_lines))
-            else:
-                note_label.config(text="لا توجد بيانات للحساب")
-
-        except Exception as e:
-            messagebox.showerror("خطأ", f"تأكد من إدخال جميع القيم بشكل صحيح.\n{e}")
-
-    tk.Button(win, text="احسب", command=calculate_tab6).grid(row=row_offset_rdm + len(labels_rdm) + 1, column=0, columnspan=2)
-
-    # ضبط الحالة الابتدائية للحقول حسب الافتراضي (كلاهما مفعل)
-    toggle_entries()
-
-
-import tkinter as tk
-from tkinter import messagebox, filedialog
-
-def open_c1_to_c4():
-    win = tk.Toplevel()
-    win.title("C1 إلى C4")
-
-    components = {
-        "سقف": ["Y1 (ارتفاع السقف)", "L1 (طول السقف)", "X1 (عرض السقف)", "L2 (طول المنور)", "X2 (عرض المنور)", "LS (طول فتحة الدرج)", "XS (عرض فتحة الدرج)"],
-        "جسر": ["L3 (طول الجسر)", "X3 (عرض الجسر)", "Y3 (ارتفاع الجسر)"],
-        "أعمدة": ["L4 (طول العمود)", "X4 (عرض العمود)", "Y4 (ارتفاع العمود)", "n (عدد الأعمدة)"],
-        "درج": ["Y5 (ارتفاع الطابق مع السقف)", "Y6 (ارتفاع البايه)", "L6 (طول البايه)", "X6 (عرض البايه)", "N (عدد الاستراحات)", "L7 (طول الاستراحة)", "X7 (عرض الاستراحة)"]
-    }
-
-    entries = {}
-    widgets = {}
-    row_counter = 5
-
-    selected_components = {name: tk.BooleanVar(value=False) for name in components}
-
-    def toggle_fields():
-        nonlocal row_counter
-        row_counter = 5
-        for widget in widgets.values():
-            widget["label"].grid_remove()
-            widget["entry"].grid_remove()
-
-        for comp, fields in components.items():
-            if selected_components[comp].get():
-                for field in fields:
-                    if field not in widgets:
-                        label = tk.Label(win, text=field)
-                        entry = tk.Entry(win)
-                        widgets[field] = {"label": label, "entry": entry}
-                    widgets[field]["label"].grid(row=row_counter, column=0, sticky='w')
-                    widgets[field]["entry"].grid(row=row_counter, column=1)
-                    row_counter += 1
-
-    # Checkbuttons
-    for i, name in enumerate(components):
-        tk.Checkbutton(win, text=name, variable=selected_components[name], command=toggle_fields).grid(row=i, column=0, sticky='w')
-
-    # Price
-    price_label = tk.Label(win, text="سعر المتر المكعب (د.ع)")
-    price_label.grid(row=0, column=1, sticky='w')
-    price_entry = tk.Entry(win)
-    price_entry.grid(row=1, column=1)
-    price_entry.insert(0, "80000")
-
-    note_label = tk.Label(win, text="", fg="blue")
-    note_label.grid(row=100, column=0, columnspan=2)
-
-    report_text = ""  # لتخزين نص التقرير
-
-    def get_val(key):
-        return float(widgets[key]["entry"].get()) if key in widgets and widgets[key]["entry"].get().strip() else 0.0
-
-    def calculate():
-        nonlocal report_text
-        try:
-            total_volume = 0
-            total_steel = 0
-            result_lines = []
-            price_per_m3 = float(price_entry.get())
-
-            if selected_components["سقف"].get():
-                y1, l1, x1 = get_val("Y1 (ارتفاع السقف)"), get_val("L1 (طول السقف)"), get_val("X1 (عرض السقف)")
-                l2, x2 = get_val("L2 (طول المنور)"), get_val("X2 (عرض المنور)")
-                xs, ls = get_val("XS (عرض فتحة الدرج)"), get_val("LS (طول فتحة الدرج)")
-                C1 = y1 * l1 * x1
-                VM = l2 * x2 * y1 if l2 and x2 else 0
-                VS = xs * ls * y1 if xs and ls else 0
-                VT = C1 - VM - VS
-                steel1 = round(VT * 0.1, 2)
-                total_volume += VT
-                total_steel += steel1
-                result_lines.append(f"السقف:\n  الحجم: {VT:.2f} م³\n  الحديد: {steel1} طن")
-
-            if selected_components["جسر"].get():
-                l3, x3, y3 = get_val("L3 (طول الجسر)"), get_val("X3 (عرض الجسر)"), get_val("Y3 (ارتفاع الجسر)")
-                C2 = l3 * y3 * x3
-                steel2 = round(C2 * 0.14, 2)
-                total_volume += C2
-                total_steel += steel2
-                result_lines.append(f"الجسر:\n  الحجم: {C2:.2f} م³\n  الحديد: {steel2} طن")
-
-            if selected_components["أعمدة"].get():
-                l4, x4, y4, n = get_val("L4 (طول العمود)"), get_val("X4 (عرض العمود)"), get_val("Y4 (ارتفاع العمود)"), get_val("n (عدد الأعمدة)")
-                C3 = l4 * x4 * y4 * n
-                steel3 = round(C3 * 0.2, 2)
-                total_volume += C3
-                total_steel += steel3
-                result_lines.append(f"الأعمدة:\n  الحجم: {C3:.2f} م³\n  الحديد: {steel3} طن")
-
-            if selected_components["درج"].get():
-                y5, y6, l6, x6 = get_val("Y5 (ارتفاع الطابق مع السقف)"), get_val("Y6 (ارتفاع البايه)"), get_val(
-                    "L6 (طول البايه)"), get_val("X6 (عرض البايه)")
-                N, y7, l7, x7 = get_val("N (عدد الاستراحات)"), get_val("Y7 (ارتفاع الاستراحة)"), get_val(
-                    "L7 (طول الاستراحة)"), get_val("X7 (عرض الاستراحة)")
-                if y6 != 0:
-                    Z_total = math.floor(y5 / y6)  # عدد البايات الكلي
-                    Z = Z_total - N  # عدد البايات بدون الاستراحات
-                    y6_new = y5 / (Z + N)  # ارتفاع البايه الجديد بعد التقريب
-
-                    V1 = y6_new * l6 * x6 * (Z - 1) + l7 * x7 * y6_new * N
-                    V2 = y6_new * x6 * l6 * 0.5 * Z
-                    C4 = V1 + V2
-                    steel4 = round(C4 * 0.12, 2)
-                    total_volume += C4
-                    total_steel += steel4
-                    result_lines.append(
-                        f"الدرج:\n  عدد البايات: {Z_total}\n  ارتفاع البايه الجديد: {y6_new:.3f} م\n  الحجم: {C4:.2f} م³\n  الحديد: {steel4} طن")
-
-            cost_concrete = total_volume * price_per_m3
-            result_lines.append(f"\nالإجمالي:\n  الحجم: {total_volume:.2f} م³\n  الحديد: {total_steel} طن\n  السعر: {cost_concrete:,.0f} د.ع")
-
-            report_text = "\n\n".join(result_lines)  # تخزين النص في المتغير
-            note_label.config(text=f"السعر التقريبي للخرسانة: {cost_concrete:,.0f} د.ع\nكمية الحديد التقريبية: {total_steel} طن")
-            messagebox.showinfo("النتائج", report_text)
-
-        except Exception as e:
-            messagebox.showerror("خطأ", f"تأكد من إدخال القيم بشكل صحيح!\n{e}")
-
-    def save_report():
-        if not report_text:
-            messagebox.showwarning("تحذير", "الرجاء تنفيذ الحساب أولاً للحصول على تقرير للحفظ.")
-            return
-        file_path = filedialog.asksaveasfilename(defaultextension=".txt",
-                                                 filetypes=[("ملفات نصية", "*.txt"), ("جميع الملفات", "*.*")])
-        if file_path:
-            try:
-                with open(file_path, "w", encoding="utf-8") as file:
-                    file.write(report_text)
-                messagebox.showinfo("نجاح", "تم حفظ التقرير بنجاح.")
-            except Exception as e:
-                messagebox.showerror("خطأ", f"فشل في حفظ التقرير.\n{e}")
-
-    tk.Button(win, text="احسب", command=calculate).grid(row=200, column=0)
-    tk.Button(win, text="حفظ التقرير", command=save_report).grid(row=200, column=1)
-
-
-def open_c5():
-    win = tk.Toplevel()
-    win.title("C5 - الأساس")
-
-    tk.Label(win, text="Y7 (الارتفاع)").grid(row=0, column=0)
-    tk.Label(win, text="X8 (العرض)").grid(row=1, column=0)
-    tk.Label(win, text="L8 (الطول)").grid(row=2, column=0)
-    tk.Label(win, text="سعر المتر المكعب (د.ع)").grid(row=3, column=0)
-
-    y7 = tk.Entry(win)
-    x8 = tk.Entry(win)
-    l8 = tk.Entry(win)
-    price_entry = tk.Entry(win)
-
-    y7.grid(row=0, column=1)
-    x8.grid(row=1, column=1)
-    l8.grid(row=2, column=1)
-    price_entry.grid(row=3, column=1)
-    price_entry.insert(0, "80000")
-
-    note_label = tk.Label(win, text="", fg="blue")
-    note_label.grid(row=5, column=0, columnspan=2)
-
-    def estimate_steel(volume):
-        return round(volume * 0.1, 2)
-
-    def calculate():
-        try:
-            Y = float(y7.get())
-            X = float(x8.get())
-            L = float(l8.get())
-            price_per_m3 = float(price_entry.get())
-            volume = Y * X * L
-            steel = estimate_steel(volume)
-            cost_concrete = volume * price_per_m3
-
-            note_label.config(text=f"السعر التقريبي للخرسانة: {cost_concrete:,.0f} د.ع\n"
-                                   f"كمية الحديد التقريبية: {steel} طن")
-
-            messagebox.showinfo("النتائج",
-                f"حجم الأساس: {volume:.2f} م³\n"
-                f"كمية الحديد: {steel} طن\n"
-                f"تكلفة الخرسانة: {cost_concrete:,.0f} د.ع"
-            )
-        except:
-            messagebox.showerror("خطأ", "تأكد من إدخال القيم بشكل صحيح")
-
-    tk.Button(win, text="احسب", command=calculate).grid(row=4, column=0, columnspan=2)
-
-def open_c6():
-    win = tk.Toplevel()
-    win.title("حساب الكاشي أو البورسلين")
-
-    # الإدخالات
-    tk.Label(win, text="المساحة الكلية (م²):").grid(row=0, column=0)
-    entry_total_area = tk.Entry(win)
-    entry_total_area.grid(row=0, column=1)
-
-    tk.Label(win, text="طول البلاطة (م):").grid(row=1, column=0)
-    entry_tile_length = tk.Entry(win)
-    entry_tile_length.grid(row=1, column=1)
-
-    tk.Label(win, text="عرض البلاطة (م):").grid(row=2, column=0)
-    entry_tile_width = tk.Entry(win)
-    entry_tile_width.grid(row=2, column=1)
-
-    # اختيار نوع البلاط
-    tk.Label(win, text="نوع البلاط:").grid(row=3, column=0)
-    tile_type_var = tk.StringVar(value="كاشي")
-    tile_type_menu = tk.OptionMenu(win, tile_type_var, "كاشي", "بورسلين")
-    tile_type_menu.grid(row=3, column=1)
-
-    # سعر المتر المربع (يدوي)
-    tk.Label(win, text="سعر المتر المربع (د.ع):").grid(row=4, column=0)
-    entry_price_per_m2 = tk.Entry(win)
-    entry_price_per_m2.grid(row=4, column=1)
-
-    # ملاحظة السعر التقريبي
-    label_hint = tk.Label(win, text="السعر التقريبي: 8000 د.ع/م²", fg="gray")
-    label_hint.grid(row=4, column=2, padx=10)
-
-    # تحديث الملاحظة حسب نوع البلاط
-    def update_hint(*args):
-        tile_type = tile_type_var.get()
-        if tile_type == "كاشي":
-            label_hint.config(text="السعر التقريبي: 8000 د.ع/م²")
-        elif tile_type == "بورسلين":
-            label_hint.config(text="السعر التقريبي: 9000 د.ع/م²")
-
-    tile_type_var.trace_add("write", update_hint)
-
-    # دالة الحساب
-    def calculate():
-        try:
-            total_area = float(entry_total_area.get())
-            tile_length = float(entry_tile_length.get())
-            tile_width = float(entry_tile_width.get())
-            price_per_m2 = float(entry_price_per_m2.get())
-            tile_type = tile_type_var.get()
-
-            if total_area <= 0 or tile_length <= 0 or tile_width <= 0 or price_per_m2 <= 0:
-                raise ValueError("جميع القيم يجب أن تكون أكبر من صفر.")
-
-            tile_area = tile_length * tile_width
-            num_tiles = total_area / tile_area
-            total_cost = total_area * price_per_m2
-
-            messagebox.showinfo(
-                "النتيجة",
-                f"نوع البلاط: {tile_type}\n"
-                f"السعر لكل متر مربع: {price_per_m2:,.0f} د.ع\n"
-                f"عدد البلاطات المطلوبة: {num_tiles:.0f} بلاطة\n"
-                f"الكلفة الكلية: {total_cost:,.0f} د.ع"
-            )
-        except ValueError as ve:
-            messagebox.showerror("خطأ في الإدخال", str(ve))
-        except Exception:
-            messagebox.showerror("خطأ", "تأكد من إدخال الأرقام بشكل صحيح.")
-
-    # زر الحساب
-    tk.Button(win, text="احسب", command=calculate).grid(row=5, column=0, columnspan=2, pady=10)
-
-
-# constants for tab4
-BRICK_HEIGHT = 0.08
-BRICK_LENGTH = 0.24
-CEMENT_PER_1000_BRICKS = 3.25 # أكياس الأسمنت لكل 1000 طابوقة
-
-# أسعار الطابوق لكل 4000 طابوقة (تعديل حسب الواقع)
-PRICE_BRICKS_RED_4000 = 1100000  # سعر الطابوق الأحمر لـ4000 طابوقة
-PRICE_BRICKS_NORMAL_4000 = 650000  # سعر الطابوق العادي لـ4000 طابوقة
-
-PRICE_CEMENT_BAG = 5000  # سعر كيس الأسمنت (مثال)
-
-def open_tab4():
-    win = tk.Toplevel()
-    win.title("حساب الطابوق والأسمنت")
-
-    tk.Label(win, text="طول الحائط مع (م)").grid(row=0, column=0)
-    tk.Label(win, text="طول الحائط بدون (م)").grid(row=1, column=0)
-    tk.Label(win, text="ارتفاع الحائط (م)").grid(row=2, column=0)
-    tk.Label(win, text="عدد الشبابيك").grid(row=3, column=0)
-    tk.Label(win, text="ارتفاعات الشبابيك (م)").grid(row=4, column=0)
-    tk.Label(win, text="عرضات الشبابيك (م)").grid(row=5, column=0)
-    tk.Label(win, text="عدد الأبواب").grid(row=6, column=0)
-    tk.Label(win, text="ارتفاعات الأبواب (م)").grid(row=7, column=0)
-    tk.Label(win, text="عرضات الأبواب (م)").grid(row=8, column=0)
-    tk.Label(win, text="سمك البتلو (م)").grid(row=9, column=0)
-    tk.Label(win, text="سمك الجسر (م)").grid(row=10, column=0)
-
-    entry_length_with = tk.Entry(win)
-    entry_length_without = tk.Entry(win)
-    entry_height = tk.Entry(win)
-    entry_num_windows = tk.Entry(win)
-    entry_num_doors = tk.Entry(win)
-    entry_betlo = tk.Entry(win)
-    entry_beam = tk.Entry(win)
-
-    entry_length_with.grid(row=0, column=1)
-    entry_length_without.grid(row=1, column=1)
-    entry_height.grid(row=2, column=1)
-    entry_num_windows.grid(row=3, column=1)
-    entry_num_doors.grid(row=6, column=1)
-    entry_betlo.grid(row=9, column=1)
-    entry_beam.grid(row=10, column=1)
-
-    # إضافة إدخالات ارتفاعات وعرض الشبابيك حسب العدد
-    window_height_entries = []
-    window_width_entries = []
-    door_height_entries = []
-    door_width_entries = []
-
-    def update_window_entries(event=None):
-        for e in window_height_entries + window_width_entries + door_height_entries + door_width_entries:
-            e.destroy()
-        window_height_entries.clear()
-        window_width_entries.clear()
-        door_height_entries.clear()
-        door_width_entries.clear()
-
-        try:
-            num_w = int(entry_num_windows.get())
-        except:
-            num_w = 0
-        try:
-            num_d = int(entry_num_doors.get())
-        except:
-            num_d = 0
-
-        for i in range(num_w):
-            h = tk.Entry(win, width=5)
-            w = tk.Entry(win, width=5)
-            h.grid(row=4, column=1+i*2)
-            w.grid(row=5, column=1+i*2)
-            window_height_entries.append(h)
-            window_width_entries.append(w)
-
-        for i in range(num_d):
-            h = tk.Entry(win, width=5)
-            w = tk.Entry(win, width=5)
-            h.grid(row=7, column=1+i*2)
-            w.grid(row=8, column=1+i*2)
-            door_height_entries.append(h)
-            door_width_entries.append(w)
-
-    entry_num_windows.bind("<KeyRelease>", update_window_entries)
-    entry_num_doors.bind("<KeyRelease>", update_window_entries)
-
-    # إضافة اختيار نوع الطابوق وسعره
-    tk.Label(win, text="نوع الطابوق").grid(row=11, column=0)
-    brick_type_var = tk.StringVar(value="عادي")
-
-    def update_price_entry():
-        if brick_type_var.get() == "أحمر":
-            entry_price.delete(0, tk.END)
-            entry_price.insert(0, str(PRICE_BRICKS_RED_4000))
-        else:
-            entry_price.delete(0, tk.END)
-            entry_price.insert(0, str(PRICE_BRICKS_NORMAL_4000))
-
-    rb_normal = tk.Radiobutton(win, text="عادي", variable=brick_type_var, value="عادي", command=update_price_entry)
-    rb_red = tk.Radiobutton(win, text="أحمر", variable=brick_type_var, value="أحمر", command=update_price_entry)
-    rb_normal.grid(row=11, column=1)
-    rb_red.grid(row=11, column=2)
-
-    tk.Label(win, text="السعر لكل 4000 طابوقة").grid(row=12, column=0)
-    entry_price = tk.Entry(win)
-    entry_price.grid(row=12, column=1)
-
-    label_note = tk.Label(win, text="(السعر تقريبي)")
-    label_note.grid(row=12, column=2)
-
-    update_price_entry()  # تعيين السعر الافتراضي عند بدء النافذة
-
-    def calculate():
-        try:
-            wall_length_with = float(entry_length_with.get() or 0)
-            wall_length_without = float(entry_length_without.get() or 0)
-            wall_height = float(entry_height.get() or 0)
-            num_windows = int(entry_num_windows.get() or 0)
-            window_heights = [float(e.get() or 0) for e in window_height_entries]
-            window_widths = [float(e.get() or 0) for e in window_width_entries]
-            num_doors = int(entry_num_doors.get() or 0)
-            door_heights = [float(e.get() or 0) for e in door_height_entries]
-            door_widths = [float(e.get() or 0) for e in door_width_entries]
-            betlo_thickness = float(entry_betlo.get() or 0)
-            beam_thickness = float(entry_beam.get() or 0)
-            price_bricks_4000 = float(entry_price.get() or 0)
-
-            net_height_1 = wall_height - betlo_thickness - beam_thickness
-            net_height_2 = wall_height - betlo_thickness if wall_length_without != 0 else 0
-
-            num_bricks_1 = (net_height_1 / BRICK_HEIGHT) * (wall_length_with / BRICK_LENGTH) * 2
-            num_bricks_2 = 0
-            if wall_length_without != 0:
-                num_bricks_2 = (net_height_2 / BRICK_HEIGHT) * (wall_length_without / BRICK_LENGTH) * 2
-
-            total_bricks = num_bricks_1 + num_bricks_2
-
-            bricks_removed = 0
-            for h, w in zip(window_heights, window_widths):
-                bricks_removed += (h / BRICK_HEIGHT) * (w / BRICK_LENGTH) * 2
-
-            for h, w in zip(door_heights, door_widths):
-                bricks_removed += (h / BRICK_HEIGHT) * (w / BRICK_LENGTH) * 2
-
-            final_bricks = total_bricks - bricks_removed
-
-            cement_bags = (final_bricks / 1000) * CEMENT_PER_1000_BRICKS
-
-            cost_bricks = (final_bricks / 4000) * price_bricks_4000
-            cost_cement = cement_bags * PRICE_CEMENT_BAG
-
-            result = (f"عدد الطابوق = {final_bricks:,.2f} طابوقة\n"
-                      f"عدد أكياس الأسمنت = {cement_bags:,.2f} كيس\n"
-                      f"تكلفة الطابوق ({brick_type_var.get()}) = {cost_bricks:,.2f} \n"
-                      f"تكلفة الأسمنت = {cost_cement:,.2f}")
-            messagebox.showinfo("النتائج", result)
-
-        except Exception as e:
-            messagebox.showerror("خطأ", f"تأكد من إدخال القيم بشكل صحيح!\n{e}")
-
-    tk.Button(win, text="احسب", command=calculate).grid(row=13, column=0, columnspan=10, pady=10)
-
-import tkinter as tk
-from tkinter import messagebox
-import math
-
-def open_tab5():
-    win = tk.Toplevel()
-    win.title("حساب الجص / الأبيّض")
-
-    labels = [
-        "طول الغرفة (م):", "عرض الغرفة (م):", "ارتفاع الجدران (م):",
-        "طول السقف (م):", "عرض السقف (م):"
-    ]
-    entries = []
-
-    # إنشاء الحقول الأساسية
-    for i, label in enumerate(labels):
-        tk.Label(win, text=label).grid(row=i, column=0, sticky='w')
-        entry = tk.Entry(win)
-        entry.grid(row=i, column=1)
-        entries.append(entry)
-
-    row_idx = len(labels)
-
-    # قسم الشباك
-    tk.Label(win, text="الشبابيك:").grid(row=row_idx, column=0, sticky='w')
-    windows_frame = tk.Frame(win)
-    windows_frame.grid(row=row_idx, column=1, sticky='w')
-    row_idx += 1
-
-    window_entries = []
-
-    def add_window_entry():
-        # إطار جديد لأبعاد الشباك (طول × عرض)
-        frame = tk.Frame(windows_frame)
-        frame.pack(anchor='w')
-
-        tk.Label(frame, text=f"طول:").pack(side='left')
-        w_length = tk.Entry(frame, width=7)
-        w_length.pack(side='left')
-
-        tk.Label(frame, text="عرض:").pack(side='left')
-        w_width = tk.Entry(frame, width=7)
-        w_width.pack(side='left')
-
-        # زر لحذف هذا الإدخال إذا أردنا
-        def remove():
-            frame.destroy()
-            window_entries.remove((w_length, w_width))
-
-        tk.Button(frame, text="✖", fg='red', command=remove).pack(side='left')
-
-        window_entries.append((w_length, w_width))
-
-    # زر إضافة شبابيك
-    tk.Button(win, text="➕ إضافة شباك", command=add_window_entry).grid(row=row_idx, column=0, sticky='w')
-    row_idx += 1
-
-    # قسم الأبواب
-    tk.Label(win, text="الأبواب:").grid(row=row_idx, column=0, sticky='w')
-    doors_frame = tk.Frame(win)
-    doors_frame.grid(row=row_idx, column=1, sticky='w')
-    row_idx += 1
-
-    door_entries = []
-
-    def add_door_entry():
-        frame = tk.Frame(doors_frame)
-        frame.pack(anchor='w')
-
-        tk.Label(frame, text="طول:").pack(side='left')
-        d_length = tk.Entry(frame, width=7)
-        d_length.pack(side='left')
-
-        tk.Label(frame, text="عرض:").pack(side='left')
-        d_width = tk.Entry(frame, width=7)
-        d_width.pack(side='left')
-
-        def remove():
-            frame.destroy()
-            door_entries.remove((d_length, d_width))
-
-        tk.Button(frame, text="✖", fg='red', command=remove).pack(side='left')
-
-        door_entries.append((d_length, d_width))
-
-    tk.Button(win, text="➕ إضافة باب", command=add_door_entry).grid(row=row_idx, column=0, sticky='w')
-    row_idx += 1
-
-    # سماكة الجص
-    plaster_thickness_label = tk.Label(win, text="سماكة الجص (م):")
-    plaster_thickness = tk.Entry(win)
-
-    # سماكة الأبيض
-    white_thickness_label = tk.Label(win, text="سماكة الأبيّض (م):")
-    white_thickness = tk.Entry(win)
-
-    # سعر كيس الجص
-    tk.Label(win, text="سعر كيس الجص (د.ع):").grid(row=row_idx, column=0, sticky='w')
-    plaster_bag_price = tk.Entry(win)
-    plaster_bag_price.insert(0, "3500")
-    plaster_bag_price.grid(row=row_idx, column=1)
-    row_idx += 1
-
-    # سعر كيس الأبيض
-    tk.Label(win, text="سعر كيس الأبيّض (د.ع):").grid(row=row_idx, column=0, sticky='w')
-    white_bag_price = tk.Entry(win)
-    white_bag_price.insert(0, "5000")
-    white_bag_price.grid(row=row_idx, column=1)
-    row_idx += 1
-
-    # اختيار نوع المادة: جص أو أبيض
-    material_var = tk.StringVar(value="plaster")
-    tk.Label(win, text="اختر نوع المادة:").grid(row=row_idx, column=0, sticky='w')
-    tk.Radiobutton(win, text="الجص", variable=material_var, value="plaster",
-                   command=lambda: toggle_thickness_fields("plaster")).grid(row=row_idx, column=1, sticky='w')
-    tk.Radiobutton(win, text="الأبيّض", variable=material_var, value="white",
-                   command=lambda: toggle_thickness_fields("white")).grid(row=row_idx, column=2, sticky='w')
-    row_idx += 1
-
-    # سماكة المادة
-    thickness_row = row_idx
-    plaster_thickness_label.grid(row=thickness_row, column=0, sticky='w')
-    plaster_thickness.grid(row=thickness_row, column=1)
-
-    def toggle_thickness_fields(material_type):
-        if material_type == "plaster":
-            plaster_thickness_label.grid(row=thickness_row, column=0, sticky='w')
-            plaster_thickness.grid(row=thickness_row, column=1)
-            white_thickness_label.grid_forget()
-            white_thickness.grid_forget()
-        elif material_type == "white":
-            white_thickness_label.grid(row=thickness_row, column=0, sticky='w')
-            white_thickness.grid(row=thickness_row, column=1)
-            plaster_thickness_label.grid_forget()
-            plaster_thickness.grid_forget()
-
-    def calculate():
-        try:
-            length = float(entries[0].get())
-            width = float(entries[1].get())
-            height = float(entries[2].get())
-            ceiling_length = float(entries[3].get())
-            ceiling_width = float(entries[4].get())
-
-            # حساب مساحة الشبابيك
-            window_area = 0
-            for w_l, w_w in window_entries:
-                window_area += float(w_l.get()) * float(w_w.get())
-
-            # حساب مساحة الأبواب
-            door_area = 0
-            for d_l, d_w in door_entries:
-                door_area += float(d_l.get()) * float(d_w.get())
-
-            wall_area = 2 * (length + width) * height
-            net_wall_area = wall_area - (window_area + door_area)
-            ceiling_area = ceiling_length * ceiling_width
-            total_area = net_wall_area + ceiling_area
-
-            material = material_var.get()
-
-            if material == "plaster":
-                thickness = float(plaster_thickness.get())
-                density = 950
-                bag_weight = 60
-                bag_price = float(plaster_bag_price.get())
-            else:
-                thickness = float(white_thickness.get())
-                density = 1100
-                bag_weight = 50
-                bag_price = float(white_bag_price.get())
-
-            volume = total_area * thickness
-            weight = volume * density
-            bags = math.ceil(weight / bag_weight)
-            total_price = bags * bag_price
-
-            message = (
-                f"🔹 نوع المادة: {'الجص' if material == 'plaster' else 'الأبيّض'}\n"
-                f"المساحة الكلية: {total_area:.2f} م²\n"
-                f"الحجم الكلي: {volume:.3f} م³\n"
-                f"الوزن الكلي: {weight:.2f} كغم\n"
-                f"عدد الأكياس المطلوبة: {bags} كيس\n"
-                f"الكلفة التقديرية: {total_price:,.0f} د.ع"
-            )
-
-            messagebox.showinfo("النتائج", message)
-
-        except ValueError:
-            messagebox.showerror("خطأ", "يرجى إدخال جميع القيم بشكل صحيح (أرقام فقط).")
-
-    tk.Button(win, text="احسب", command=calculate).grid(row=thickness_row + 2, column=0, columnspan=3, pady=10)
-
-# لا تنسى أن تجرب تستدعي open_tab5() من النافذة الرئيسية مثل:
-# root = tk.Tk()
-# tk.Button(root, text="افتح حساب الجص", command=open_tab5).pack()
-# root.mainloop()
-
-
-
-
-# النافذة الرئيسية مع الأزرار
-root = tk.Tk()
-root.title("برنامج الحسابات الإنشائية")
-
-tk.Label(root, text=" حساب الكميات والاسعار").pack(pady=10)
-tk.Button(root, text="كمية الحفر والردم",command=open_tab6).pack(fill='x', padx=20, pady=5)
-tk.Button(root, text=" الأساس وصبة النضافة", command=open_c5).pack(fill='x', padx=20, pady=5)
-tk.Button(root, text="حساب الطابوق والأسمنت", command=open_tab4).pack(fill='x', padx=20, pady=5)
-tk.Button(root, text="(السقف-الجسر-الاعمدة-الدرج)", command=open_c1_to_c4).pack(fill='x', padx=20, pady=5)
-tk.Button(root, text=" حساب الجص والبياض", command=open_tab5).pack(fill='x', padx=20, pady=5)
-tk.Button(root, text=" الكاشي أو البورسلين", command=open_c6).pack(fill='x', padx=20, pady=5)
-tk.Button(root, text="عدد العمال", command=open_tab7).pack(fill='x', padx=20, pady=5)
-
-
-root.mainloop()
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProTrack Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* شريط علوي احترافي */
+        .header {
+            width: 100%;
+            height: 60px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        /* زر الهامبرغر لاستدعاء السلايدر */
+        .menu-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #4a154b; /* لون هوية بروتراك المائل للبنفسجي */
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-btn:active {
+            background-color: #f0f0f0;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4a154b;
+        }
+
+        /* الحاوية الرئيسية ومحتوى الترحيب */
+        .main-container {
+            margin-top: 100px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .welcome-card {
+            background: #ffffff;
+            padding: 30px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .welcome-card h1 {
+            font-size: 24px;
+            color: #4a154b;
+            margin-bottom: 10px;
+        }
+
+        .welcome-card p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* زر استرشادي كبير داخل الصفحة */
+        .action-btn {
+            display: inline-block;
+            background-color: #4a154b;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(74, 21, 75, 0.3);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+            background-color: #350f36;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شريط التنقل العلوي -->
+    <header class="header">
+        <!-- الرابط السحري لفتح السلايدر الخاص بالمنصة -->
+        <a href="w2n://open-sidebar" class="menu-btn">
+            &#9776; <!-- رمز الخطوط الثلاثة للرابط -->
+        </a>
+        <div class="logo">ProTrack</div>
+        <div style="width: 44px;"></div> <!-- لموازنة التصميم في الهيدر -->
+    </header>
+
+    <!-- المحتوى الفعلي للتطبيق عند الفتح -->
+    <main class="main-container">
+        <div class="welcome-card">
+            <h1>أهلاً بك في ProTrack</h1>
+            <p>اضغط على زر القائمة في الأعلى ☰ للتنقل بين الأدوات والبرامج المتاحة مثل حساب الكميات، إدارة المشاريع، وحاسبة الحديد.</p>
+            
+            <!-- زر إضافي وسط الصفحة يقوم بنفس العملية لسهولة الاستخدام -->
+            <a href="w2n://open-sidebar" class="action-btn">فتح قائمة الأدوات</a>
+        </div>
+    </main>
+
+</body>
+</html>
