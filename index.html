@@ -2,12 +2,14 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- هذا السطر تم تعديله لإجبار العرض على مقاس الموبايل الحقيقي ومنع التكبير والتصغير التلقائي -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>ProTrack Hub</title>
+    
     <!-- استدعاء خط Cairo الاحترافي للواجهات العربية -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&display=swap" rel="stylesheet">
     
     <style>
         * {
@@ -25,15 +27,17 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding-bottom: 30px;
+            padding-bottom: 40px;
+            /* منع المتصفح من تصغير الخط تلقائياً */
+            -webkit-text-size-adjust: 100%;
         }
 
-        /* هيدر عريض واحترافي */
+        /* شريط علوي ضخم واحترافي */
         .header {
             width: 100%;
-            height: 70px;
+            height: 80px; /* زيادة الارتفاع */
             background-color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -44,16 +48,16 @@
             z-index: 1000;
         }
 
-        /* زر القائمة بحجم كبير وسهل الضغط */
+        /* زر القائمة بحجم ضخم جداً وسهل الضغط جداً */
         .menu-btn {
             background: #f1f5f9;
             border: none;
-            font-size: 28px;
+            font-size: 36px; /* تكبير الرمز */
             color: #4a154b;
             cursor: pointer;
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
+            width: 60px; /* تكبير مساحة الزر */
+            height: 60px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -63,80 +67,78 @@
 
         .menu-btn:active {
             background-color: #e2e8f0;
-            transform: scale(0.95);
+            transform: scale(0.92);
         }
 
         .logo {
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 28px; /* تكبير اللوغو */
+            font-weight: 800;
             color: #4a154b;
-            letter-spacing: 0.5px;
         }
 
         /* الحاوية الرئيسية للمحتوى */
         .main-container {
-            margin-top: 100px;
+            margin-top: 110px; /* مسافة كافية بعد الهيدر الضخم */
             width: 100%;
-            max-width: 480px;
+            max-width: 500px;
             padding: 0 20px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
         }
 
-        /* بنر ترحيبي علوي */
+        /* بنر ترحيبي علوي بنصوص واضحة */
         .welcome-section {
             background: linear-gradient(135deg, #4a154b 0%, #6b21a8 100%);
             color: #ffffff;
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 10px 20px rgba(74, 21, 75, 0.15);
+            padding: 28px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(74, 21, 75, 0.2);
         }
 
         .welcome-section h1 {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 8px;
+            font-size: 26px; /* تكبير العنوان الرئيسي */
+            font-weight: 800;
+            margin-bottom: 10px;
         }
 
         .welcome-section p {
-            font-size: 14px;
-            opacity: 0.9;
-            line-height: 1.6;
+            font-size: 16px; /* تكبير النص الوصفي */
+            opacity: 0.95;
+            line-height: 1.7;
         }
 
         /* عنوان القسم */
         .section-title {
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 800;
             color: #64748b;
-            margin-top: 5px;
             margin-bottom: -5px;
         }
 
-        /* تصميم القوائم والبطاقات بشكل كبير واحترافي */
+        /* تصميم القوائم والبطاقات بحجم ضخم وعريض */
         .tools-grid {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 18px;
         }
 
         .tool-card {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 18px;
+            border: 2px solid #e2e8f0; /* زيادة سمك الإطار */
+            border-radius: 20px;
+            padding: 22px; /* مساحة داخلية ضخمة لسهولة اللمس */
             display: flex;
             align-items: center;
             justify-content: space-between;
             text-decoration: none;
             color: inherit;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.02);
             transition: all 0.2s ease;
         }
 
         .tool-card:active {
-            transform: scale(0.98);
+            transform: scale(0.96);
             background-color: #f8fafc;
             border-color: #cbd5e1;
         }
@@ -144,36 +146,36 @@
         .tool-info {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 20px;
         }
 
-        /* الأيقونات الافتراضية للبطاقات */
+        /* الأيقونات بحجم كبير جداً */
         .tool-icon {
-            width: 48px;
-            height: 48px;
+            width: 56px;
+            height: 56px;
             background: #fae8ff;
             color: #4a154b;
-            border-radius: 12px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 28px; /* تكبير الرموز التعبيرية */
         }
 
         .tool-details .title {
-            font-size: 16px;
+            font-size: 20px; /* تكبير أسماء القوائم */
             font-weight: 700;
             color: #1e293b;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
 
         .tool-details .subtitle {
-            font-size: 12px;
+            font-size: 14px; /* تكبير الوصف الفرعي */
             color: #64748b;
         }
 
         .arrow-icon {
-            font-size: 18px;
+            font-size: 22px;
             color: #94a3b8;
         }
     </style>
@@ -186,7 +188,7 @@
             &#9776;
         </a>
         <div class="logo">ProTrack</div>
-        <div style="width: 48px;"></div> <!-- توازن الهيدر -->
+        <div style="width: 60px;"></div> <!-- توازن الهيدر مع حجم الزر الجديد -->
     </header>
 
     <!-- المحتوى الرئيسي للمنصة -->
@@ -195,10 +197,10 @@
         <!-- البنر الترحيبي -->
         <div class="welcome-section">
             <h1>منصة الإدارة والأدوات</h1>
-            <p>إدارة مشاريعك الهندسية وحساب الكميات بدقة عالية في مكان واحد. اضغط على الزر العلوي أو اختر الأداة من الأسفل.</p>
+            <p>إدارة مشاريعك الهندسية وحساب الكميات بدقة عالية في مكان واحد. اضغط على الزر العلوي المنسدل أو اختر الأداة من القائمة في الأسفل.</p>
         </div>
 
-        <p class="section-title">الأدوات السريعة</p>
+        <p class="section-title">الأدوات المتاحة</p>
 
         <!-- شبكة الأدوات والقوائم الكبيرة -->
         <div class="tools-grid">
